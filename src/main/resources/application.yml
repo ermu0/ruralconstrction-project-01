@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: ruralconstrction-project-01
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/test
+    username: root
+    password: 123456
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # show the mybatis log (sql log) on the console
+    map-underscore-to-camel-case: true # Enable the automatic mapping switch for camel hump naming in mybatis
+
+# spring transaction management for log
+logging:
+  level:
+    org.springframework.jdbc.support.JdbcTransactionManager: debug

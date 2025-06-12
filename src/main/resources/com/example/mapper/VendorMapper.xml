@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.VendorMapper">
+
+    <sql id="conditions">
+        select id, company_name, company_phone, company_charger_name,
+               company_email, company_type, company_address, company_introduction,
+               certificate, bill_quantity, create_time, update_time
+        from vendor
+    </sql>
+
+
+    <!--根据ID更新供应商信息-->
+    <update id="update">
+        update vendor
+        <set>
+            <if test="companyName != null and companyName != ''"></if>
+            <if test="companyPhone != null and companyPhone != ''"></if>
+            <if test="companyChargerName != null and companyChargerName != ''"></if>
+            <if test="companyEmail != null and companyEmail != ''"></if>
+            <if test="companyType != null"></if>
+            <if test="companyAddress != null and companyAddress != ''"></if>
+            <if test="companyIntroduction != null and companyIntroduction != ''"></if>
+            <if test="certificate != null and certificate != null"></if>
+            <if test="updateTime != null"></if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <!--根据ID删除（单/多）条数据-->
+    <delete id="deleteByIds">
+        delete from vendor where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--条件搜索-->
+    <select id="selectByContions" resultType="com.example.pojo.Vendor">
+        <include refid="conditions"/>
+        <where>
+            <if test="companyName != null and companyName != ''">company_name like concat('%',#{companyName},'%')</if>
+            <if test="companyPhone != null and companyPhone != ''">and company_phone=#{companyPhone}</if>
+            <if test="companyChargerName != null and companyChargerName != ''">and company_charger_name like concat('%',#{companyChargerName},'%')</if>
+            <if test="companyEmail != null and companyEmail != ''">and company_email=#{companyEmail}</if>
+            <if test="companyType != null">and company_type=#{companyType}</if>
+            <if test="companyAddress != null and companyAddress != ''">and company_address like concat('%',#{companyAddress},'%')</if>
+            <if test="createTime != null">and create_time=#{createTime}</if>
+            <if test="updateTime != null">and update_time=#{updateTime}</if>
+        </where>
+    </select>
+
+</mapper>

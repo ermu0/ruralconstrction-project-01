@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.UserMapper">
+
+
+    <sql id="conditions">
+        select id,
+               username,
+               name,
+               password,
+               phone_number,
+               email,
+               address,
+               image,
+               create_time,
+               update_time,
+               role_type
+        from user
+    </sql>
+
+
+    <!--条件搜索-->
+    <!--resultType：单条记录封装的类型-->
+    <select id="selectByCondition" resultType="com.example.pojo.User">
+        <include refid="conditions"/>
+        <where>
+            <if test="username != null and username != ''">username like concat('%',#{username},'%')</if>
+            <if test="name != null and name != ''">and name like concat('%',#{name},'%')</if>
+            <if test="password != null and password != ''">and password=#{password}</if>
+            <if test="phoneNumber != null and phoneNumber != ''">and phone_number=#{phoneNumber}</if>
+            <if test="email != null and email != ''">and email=#{email}</if>
+            <if test="address != null and address != ''">and address=#{address}</if>
+            <if test="image != null and image != ''">and image=#{image}</if>
+            <if test="createTime != null">and create_time=#{createTime}</if>
+            <if test="updateTime != null">and update_time=#{updateTime}</if>
+            <if test="roleType != null">and role_type=#{roleType}</if>
+        </where>
+    </select>
+
+    <!--根据ID更新员工信息-->
+    <update id="update">
+        update user
+        <set>
+            <if test="username != null and username != ''">username=#{username},</if>
+            <if test="name != null and name != ''">name=#{name},</if>
+            <if test="password != null and password != ''">password=#{password},</if>
+            <if test="phoneNumber != null and phoneNumber != ''">phone_number=#{phoneNumber},</if>
+            <if test="email != null and email != ''">email=#{email},</if>
+            <if test="address != null and address != ''">address=#{address},</if>
+            <if test="image != null and image != ''">image=#{image},</if>
+            <if test="updateTime != null">update_time=#{updateTime},</if>
+            <if test="roleType != null">role_type=#{roleType}</if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <!--根据ID批量删除员工信息-->
+    <delete id="deleteByIds">
+        delete from user where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+    
+    <!--添加用户信息-->
+<!--    <insert id="insert">-->
+<!--        insert into user(username, password, name, phone_number, email, address, image, create_time, update_time, role_type)-->
+<!--        <trim prefix="values(" suffix=")" suffixOverrides=",">-->
+<!--            <if test="">#{username},</if>-->
+<!--            <if test="">#{name},</if>-->
+<!--            <if test="password != null and password != ''">#{password},</if>-->
+<!--            <if test="phoneNumber != null and phoneNumber != ''">#{phone_number},</if>-->
+<!--            <if test="email != null and email != ''">#{email},</if>-->
+<!--            <if test="address != null and address != ''">#{address},</if>-->
+<!--            <if test="image != null and image != ''">#{image},</if>-->
+<!--            <if test="updateTime != null">#{update_time},</if>-->
+<!--            <if test="createTime != null">#{create_time},</if>-->
+<!--            <if test="roleType != null">#{role_type}</if>-->
+<!--        </trim>-->
+<!--    </insert>-->
+    
+</mapper>
