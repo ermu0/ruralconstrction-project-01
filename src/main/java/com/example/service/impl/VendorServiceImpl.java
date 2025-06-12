@@ -18,6 +18,7 @@ public class VendorServiceImpl implements VendorService {
     @Autowired
     VendorMapper vendorMapper;
 
+    //分页查询的具体实现
     @Override
     public PageBean page(Integer page, Integer pageSize) {
         //设置分页参数
@@ -32,4 +33,31 @@ public class VendorServiceImpl implements VendorService {
 
         return pageBean;
     }
+
+
+    //添加供应商信息的具体实现
+    @Override
+    public void insertVendor(Vendor vendor) {
+        vendorMapper.insert(vendor);
+    }
+
+    //更新供应商信息的具体实现
+    @Override
+    public void updateVendor(Vendor vendor) {
+        vendorMapper.update(vendor);
+    }
+
+    //删除供应商信息的具体实现
+    @Override
+    public void deleteVendor(List<Integer> vendors) {
+        vendorMapper.deleteByIds(vendors);
+    }
+
+    //条件查询的具体实现
+    @Override
+    public List<Vendor> selectVendor(Vendor vendor) {
+        return vendorMapper.selectByContions(vendor);
+    }
+
+
 }
