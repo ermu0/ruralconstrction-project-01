@@ -17,8 +17,8 @@ public interface VendorMapper {
      * 添加供应商信息（单条）(未做null以及空格值校验)
      * @param vendor
      */
-    @Insert("insert into vendor(company_name, company_phone, company_charger_name, company_email, company_type, company_address, company_introduction, certificate, bill_quantity, create_time, update_time) " +
-            "values(#{companyName},#{companyPhone},#{companyChargerName},#{companyEmail},#{companyType},#{companyAddress},#{companyIntroduction},#{certificate},#{billQuantity},#{createTime},#{updateTime}) ")
+    @Insert("insert into vendor(company_name, company_phone, company_charger_name, company_email, company_type, company_address, company_introduction, certificate, create_time, update_time, user_id) " +
+            "values(#{companyName},#{companyPhone},#{companyChargerName},#{companyEmail},#{companyType},#{companyAddress},#{companyIntroduction},#{certificate},#{createTime},#{updateTime},#{userID}) ")
     public void insert(Vendor vendor);
 
 
@@ -47,5 +47,5 @@ public interface VendorMapper {
      * @param vendor
      * @return
      */
-    public List<Vendor> selectByContions(Vendor vendor);
+    public List<Vendor> selectByContion(Vendor vendor);
 }

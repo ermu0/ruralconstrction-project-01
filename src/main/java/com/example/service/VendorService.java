@@ -8,7 +8,7 @@ import java.util.List;
 public interface VendorService {
 
     /**
-     * 根据分页页码以及分页所展示的记录数进行供应商信息的分页查询操作
+     * 根据分页页码、分页记录数进行供应商信息的分页查询
      * @param page
      * @param pageSize
      * @return

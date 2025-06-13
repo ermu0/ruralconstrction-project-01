@@ -22,13 +22,15 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    //这里只是简单测试用
+    //这里只是简单测试用（前端传递用户姓名以及手机号进行验证）
     //默认设置页码为1，分页展示记录数为10
     @GetMapping("/page")
     public Result page(@RequestParam(defaultValue = "1") Integer page,
-                       @RequestParam(defaultValue = "10") Integer pageSize ){
-        log.info("分页查询，参数：{},{}",page,pageSize);
-        PageBean pageBean = userService.page(page,pageSize);
+                       @RequestParam(defaultValue = "10") Integer pageSize,
+                       String name,
+                       String phoneNumber){
+        log.info("分页查询，参数：{},{}",page,pageSize,name,phoneNumber);
+        PageBean pageBean = userService.page(page,pageSize,name,phoneNumber);
         return Result.success(pageBean);
     }
 

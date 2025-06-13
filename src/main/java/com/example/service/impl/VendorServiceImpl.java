@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -38,12 +39,17 @@ public class VendorServiceImpl implements VendorService {
     //添加供应商信息的具体实现
     @Override
     public void insertVendor(Vendor vendor) {
+        //设置创建以及更新时间
+        vendor.setCreateTime(LocalDateTime.now());
+        vendor.setUpdateTime(LocalDateTime.now());
         vendorMapper.insert(vendor);
     }
 
     //更新供应商信息的具体实现
     @Override
     public void updateVendor(Vendor vendor) {
+        //设置更新时间
+        vendor.setUpdateTime(LocalDateTime.now());
         vendorMapper.update(vendor);
     }
 
@@ -56,7 +62,7 @@ public class VendorServiceImpl implements VendorService {
     //条件查询的具体实现
     @Override
     public List<Vendor> selectVendor(Vendor vendor) {
-        return vendorMapper.selectByContions(vendor);
+        return vendorMapper.selectByContion(vendor);
     }
 
 

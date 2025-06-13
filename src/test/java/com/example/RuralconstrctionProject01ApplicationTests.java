@@ -153,12 +153,18 @@ class RuralconstrctionProject01ApplicationTests {
     public void testDeleteUsers(){
         List<Integer> list = new ArrayList<>();
         list.add(22);
-        userService.deleteUsers(list);
+        userService.deleteUser(list);
     }
 
     @Test
     public void testVendorPage(){//测试成功 说明我的表以及对应的对象都是没问题的
         PageBean pageBean = vendorService.page(1,3);
+        System.out.println(pageBean);
+    }
+
+    @Test
+    public void testUserPage(){
+        PageBean pageBean = userService.page(1,5,"ermu0","");
         System.out.println(pageBean);
     }
 }

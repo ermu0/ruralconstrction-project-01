@@ -5,9 +5,18 @@
 <mapper namespace="com.example.mapper.VendorMapper">
 
     <sql id="conditions">
-        select id, company_name, company_phone, company_charger_name,
-               company_email, company_type, company_address, company_introduction,
-               certificate, bill_quantity, create_time, update_time
+        select id,
+               company_name,
+               company_phone,
+               company_charger_name,
+               company_email,
+               company_type,
+               company_address,
+               company_introduction,
+               certificate,
+               create_time,
+               update_time,
+               user_id
         from vendor
     </sql>
 
@@ -38,7 +47,7 @@
     </delete>
 
     <!--条件搜索-->
-    <select id="selectByContions" resultType="com.example.pojo.Vendor">
+    <select id="selectByContion" resultType="com.example.pojo.Vendor">
         <include refid="conditions"/>
         <where>
             <if test="companyName != null and companyName != ''">company_name like concat('%',#{companyName},'%')</if>

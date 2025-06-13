@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.OrderMapper">
+
+    <sql id="conditions">
+        select id,
+               order_number,
+               total_amount,
+               payment_method,
+               order_status,
+               payment_status,
+               order_address,
+               customer_notes,
+               admin_notes,
+               order_time,
+               create_time,
+               update_time,
+               user_id
+        from order
+    </sql>
+
+    <!--更新订单信息-->
+    <update id="update">
+        update order
+        <set>
+            <if test="orderNumber != null and orderNumber != ''">order_number=#{orderNumber}</if>
+            <if test="totalAmount != null">total_amount=#{totalAmount}</if>
+            <if test="paymentMethod != null and paymentMethod != ''">payment_Method=#{paymentMethod}</if>
+            <if test="orderStatus != null and orderStatus != ''">order_status=#{orderStatus}</if>
+            <if test="paymentStatus != null and paymentStatus != ''">payment_status=#{paymentStatus}</if>
+            <if test="orderAddress != null and orderAddress != ''">order_address=#{orderAddress}</if>
+            <if test="customerNotes != null and customerNotes != ''">customer_notes=#{customerNotes}</if>
+            <if test="adminNotes != null and adminNotes != ''">admin_nots=#{adminNotes}</if>
+            <if test="orderTime != null">order_time=#{orderTime}</if>
+            <if test="updateTime != null">update_time=#{updateTime}</if>
+            <if test="userId != null">user_id=#{userId}</if>
+        </set>
+    </update>
+
+    <!--根据ID删除（单/多）条订单数据-->
+    <delete id="deleteByIds">
+        delete from order where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectByCondition" resultType="com.example.pojo.Order">
+        <include refid="conditions"/>
+        <where>
+            <if test="orderNumber != null">order_number=#{orderNumber}</if>
+            <if test="totalAmount != null and totalAmount != ''">and total_amount=#{totalAmount}</if>
+            <if test="paymentMethod != null and paymentMethod != ''">and payment_method=#{paymentMethod}</if>
+            <if test="orderStatus != null and orderStatus != ''">order_status=#{orderStatus}</if>
+            <if test="orderAddress != null and orderAddress != ''">and order_address like concat('%',#{orderAddress},'%')</if>
+            <if test="customerNotes != null and customerNotes != ''">and customer_notes=#{customerNotes}</if>
+            <if test="adminNotes != null and adminNotes != ''">and admin_notes=#{adminNotes}</if>
+            <if test="orderTime != null">and order_time=#{orderTime}</if>
+            <if test="createTime != null">and create_time=#{createTime}</if>
+            <if test="updateTime != null">and update_time=#{updateTime}</if>
+            <if test="userID != null">and user_id=#{userId}</if>
+        </where>
+    </select>
+
+</mapper>
