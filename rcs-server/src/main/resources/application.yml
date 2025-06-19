@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: rcs-server
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/test
+    username: root
+    password: 123456
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # show the mybatis log (sql log) on the console
+    map-underscore-to-camel-case: true # Enable the automatic mapping switch for camel hump naming in mybatis
+  global-config:
+    db-config:
+      id-type: auto # auto increment id
+#      update-strategy: not_null # only update the fields who are not null
+
+
+# spring transaction management for log
+logging:
+  level:
+    org.springframework.jdbc.support.JdbcTransactionManager: debug
+
+# jwt static configuration
+jwt:
+  utils:
+    expire: 43200000
+    signKey: vliQsTzi8aKxoDDtK4zYVwAhcUCWcQ3fwB8G6EursIQ=
+
+
+
+# swagger config
+#springdoc:
+#  swagger-ui:
+#    path: /test-ui.html
+#    tags-sorter: alpha
+#    operations-sorter: alpha
+#  api-docs:
+#    path: /v3/api-docs
+#  group-configs:
+#    - group: 'default'
+#      paths-to-match: '/**'
+#      packages-to-scan: com.rcs.controller
+#knife4j:
+#  enable: true
+#  setting:
+#    language: zh_cn
