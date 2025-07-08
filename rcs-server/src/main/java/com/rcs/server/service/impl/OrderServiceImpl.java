@@ -1,8 +1,11 @@
 package com.rcs.server.service.impl;
 
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.rcs.server.domain.dto.UserOrderDto;
 import com.rcs.server.domain.entity.Order;
 import com.rcs.server.domain.pojo.PageBean;
 import com.rcs.server.mapper.OrderMapper;
@@ -11,54 +14,92 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
 
 @Service
-public class OrderServiceImpl implements OrderService {
+public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements OrderService {
 
     @Autowired
     OrderMapper orderMapper;
 
-    //分页查询订单的具体操作
+    /**
+     * 用户部分信息以及部分订单信息分页查询具体操作
+     * @param pageNow
+     * @param pageSize
+     * @return
+     */
     @Override
-    public PageBean page(Integer page, Integer pageSize) {
-        //设置分页参数
-        PageHelper.startPage(page,pageSize);
+    public PageBean queryUserOrderInfo(Integer pageNow, Integer pageSize) {
+        Page<Order> page = Page.of(pageNow,pageSize);
 
-        //执行查询（后续可以修改为条件查询）
-        List<Order> orders = orderMapper.selectAll();
-        Page<Order> p = (Page<Order>) orders;
+        //执行分页查询（暂未做排序，看后续需求）
+        IPage<UserOrderDto> orderIPage = orderMapper.selectUserOrderInfo(page);
 
-        //将返回的用户信息封装到PageBean对象中
-        PageBean pageBean = new PageBean(p.getTotal(),p.getResult());
-
-        return pageBean;
+        return new PageBean(orderIPage.getTotal(),orderIPage.getRecords());
     }
 
-    //添加订单信息的具体操作
+    /**
+     * 某个用户的部分信息以及部分订单信息分页查询具体操作
+     * @param pageNow
+     * @param pageSize
+     * @param phoneNumer
+     * @return
+     */
     @Override
-    public void insertOrder(Order order) {
-        order.setCreateTime(LocalDateTime.now());
+    public PageBean queryUserOrderInfo(Integer pageNow, Integer pageSize, String phoneNumer) {
+        Page<Order> page = Page.of(pageNow,pageSize);
+
+        //执行分页查询（暂未做排序）
+        IPage<UserOrderDto> orderIPage = orderMapper.selectUserOrderInfo(page, phoneNumer);
+
+        return new PageBean(orderIPage.getTotal(),orderIPage.getRecords());
+    }
+
+    /**
+     * 用户订单信息具体查询具体操作
+     * @param orderNumber
+     * @return
+     */
+    @Override
+    public Order queryOrderInfo(String orderNumber) {
+        //构造查询条件
+        LambdaQueryWrapper<Order> queryWrapper = new LambdaQueryWrapper<Order>()
+                .eq(Order::getOrderNumber,orderNumber);
+
+        return orderMapper.selectOne(queryWrapper);
+    }
+
+    /**
+     * 用户订单信息删除具体操作
+     * @param orderNumber
+     */
+    @Override
+    public void removeOrder(String orderNumber) {
+        LambdaQueryWrapper<Order> queryWrapper = new LambdaQueryWrapper<Order>()
+                .eq(Order::getOrderNumber,orderNumber);
+
+        orderMapper.delete(queryWrapper);
+    }
+
+    /**
+     * 用户订单信息更新具体操作
+     * @param order
+     * @return
+     */
+    @Override
+    public Map<Integer, String> updateOrderInfo(Order order) {
+        Map<Integer,String> result = new HashMap<Integer,String>();
         order.setUpdateTime(LocalDateTime.now());
-        orderMapper.insert(order);
+
+        if (orderMapper.updateById(order) == 1){
+            result.put(1,"信息更新成功");
+        }else {
+            result.put(0,"信息更新失败，请重新检查信息是否有误");
+        }
+        return result;
     }
 
-    //更新订单信息的具体操作
-    @Override
-    public void updateOrder(Order order) {
-        order.setUpdateTime(LocalDateTime.now());
-        orderMapper.update(order);
-    }
 
-    //根据ID删除批量或单条订单数据的具体操作
-    @Override
-    public void deleteOrder(List<Integer> ids) {
-        orderMapper.deleteByIds(ids);
-    }
-
-    //条件查询订单信息的具体操作
-    @Override
-    public List<Order> selectOrder(Order order) {
-        return orderMapper.selectByCondition(order);
-    }
 }

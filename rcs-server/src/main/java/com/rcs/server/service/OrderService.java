@@ -1,46 +1,50 @@
 package com.rcs.server.service;
 
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.rcs.server.domain.pojo.PageBean;
 import com.rcs.server.domain.entity.Order;
 
 import java.util.List;
+import java.util.Map;
 
-public interface OrderService {
+public interface OrderService extends IService<Order> {
+
 
     /**
-     * 根据分页页码、分页记录进行订单信息的分页查询
+     * 用户部分信息以及部分订单信息分页查询
      * @param page
      * @param pageSize
      * @return
      */
-    public PageBean page(Integer page, Integer pageSize);
-
+    PageBean queryUserOrderInfo(Integer page, Integer pageSize);
 
     /**
-     * 添加订单信息
-     * @param order
+     * 某个用户的部分信息以及部分订单信息分页查询
+     * @param page
+     * @param pageSize
+     * @param phoneNumer
+     * @return
      */
-    public void insertOrder(Order order);
+    PageBean queryUserOrderInfo(Integer page, Integer pageSize, String phoneNumer);
 
     /**
-     * 更新订单信息
-     * @param order
+     * 用户订单信息具体查询
+     * @param orderNumber
+     * @return
      */
-    public void updateOrder(Order order);
-
+    Order queryOrderInfo(String orderNumber);
 
     /**
-     * 根据ID删除批量或者单条订单数据
-     * @param orders
+     * 用户订单信息删除
+     * @param orderNumber
      */
-    public void deleteOrder(List<Integer> orders);
-
+    void removeOrder(String orderNumber);
 
     /**
-     * 根据条件查询订单信息
+     * 用户订单信息更新
      * @param order
      * @return
      */
-    public List<Order> selectOrder(Order order);
+    Map<Integer, String> updateOrderInfo(Order order);
 }

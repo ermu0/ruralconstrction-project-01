@@ -1,96 +1,51 @@
 package com.rcs.server.service.impl;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.rcs.server.domain.pojo.PageBean;
 import com.rcs.server.domain.entity.User;
 import com.rcs.server.mapper.UserMapper;
 import com.rcs.server.service.UserService;
-//import com.rcs.common.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService{
 
     @Autowired
     UserMapper userMapper;
 
-//    @Autowired
-//    JwtUtils jwtUtils;
-
-    //分页条件查询的详细操作（有pageHelper插件版）
+    /**
+     * 用户信息无条件分页查询具体操作
+     * @param pageNow
+     * @param pageSize
+     * @return
+     */
     @Override
-    public PageBean page(Integer page, Integer pageSize, String name, String phoneNumber){
+    public PageBean pageUserInfo(Integer pageNow, Integer pageSize) {
+        // 准备分页条件
+        Page<User> page =  Page.of(pageNow,pageSize);
 
-        //自动设置分页参数
-        PageHelper.startPage(page,pageSize);
+        // 根据创建时间进行升序排序（不要硬编码）
+        LambdaQueryWrapper queryWrapper = new LambdaQueryWrapper<User>()
+                .orderByAsc(User::getCreateTime);
 
-        //先将搜索条件封装到User对象对象中
-        User user = new User();
-        user.setName(name);
-        user.setPhoneNumber(phoneNumber);
+        //执行分页查询
+        IPage<User> userIPage = userMapper.selectPage(page,queryWrapper);
 
-        //执行查询
-        List<User> users = userMapper.selectByCondition(user);
-        Page<User> p = (Page<User>) users;
-
-        //将返回的用户信息封装到PageBean对象中
-        PageBean pageBean = new PageBean(p.getTotal(),p.getResult());
-
-        return pageBean;
-    }
-
-    //用户登录查询的详细操作
-//    @Override
-//    public Map<Integer,String> login(User user) {
-//        User u = userMapper.selectByUsernameAndPassword(user.getUsername(),user.getPassword());
-//        Map<Integer,String> result = new HashMap<Integer,String>();
-//        if (u != null){
-//            Map<String,Object> claims = new HashMap<>();
-//            claims.put("id",u.getId());
-//            claims.put("username",u.getUsername());
-//            String jwt = jwtUtils.generateJwt(claims);
-//            result.put(1,jwt);
-//            return result;
-//        }
-//        result.put(0,"用户名或者密码错误");
-//        return result;
-//    }
-
-    //根据ID批量删除员工的详细操作
-    @Transactional(rollbackFor = Exception.class)//所有异常类型都进行回滚
-    @Override
-    public void deleteUser(List<Integer> ids) {
-        userMapper.deleteByIds(ids);
-    }
-
-    //添加用户的具体操作
-    @Override
-    public void insertUser(User user) {
-        //处理创建时间以及更新时间
-        user.setCreateTime(LocalDateTime.now());
-        user.setUpdateTime(LocalDateTime.now());
-        userMapper.insert(user);
-    }
-
-    //更新用户的具体操作
-    @Override
-    public void updateUser(User user) {
-        //处理更新时间
-        user.setUpdateTime(LocalDateTime.now());
-        userMapper.update(user);
+        return new PageBean(userIPage.getTotal(),userIPage.getRecords());
     }
 
     @Override
-    public List<User> selectUser(User user) {
-        return userMapper.selectByCondition(user);
+    public User queryUserByPhoneNumber(String phoneNumber) {//这里需要做查询为空的异常处理
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<User>()
+                .eq(User::getPhoneNumber, phoneNumber);
+        return userMapper.selectOne(lambdaQueryWrapper);
     }
+
 
 }

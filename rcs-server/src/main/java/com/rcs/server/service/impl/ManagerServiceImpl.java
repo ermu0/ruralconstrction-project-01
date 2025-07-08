@@ -61,7 +61,7 @@ public class ManagerServiceImpl extends ServiceImpl<ManagerMapper, Manager> impl
      * @return
      */
     @Override
-    public Manager selectByUserId(String userId) {
+    public Manager queryByManagerId(String userId) {
         LambdaQueryWrapper<Manager> wrapper = new LambdaQueryWrapper<Manager>()
                 .eq(Manager::getUserId, userId);
         return managerMapper.selectOne(wrapper);
@@ -74,11 +74,11 @@ public class ManagerServiceImpl extends ServiceImpl<ManagerMapper, Manager> impl
      * @return
      */
     @Override
-    public PageBean getAccountByPage(Integer pageNow, Integer pageSize) {
+    public PageBean pageManagerInfo(Integer pageNow, Integer pageSize) {
         // 准备分页条件
         Page<Manager> page =  Page.of(pageNow,pageSize);
         // 根据创建时间进行升序排序（不要硬编码）
-        LambdaQueryWrapper queryWrapper = new LambdaQueryWrapper<Manager>()
+        LambdaQueryWrapper<Manager> queryWrapper = new LambdaQueryWrapper<Manager>()
                 .orderByAsc(Manager::getCreateTime);
         // 执行分页查询
         IPage<Manager> managerIPage = managerMapper.selectPage(page, queryWrapper);
@@ -107,7 +107,7 @@ public class ManagerServiceImpl extends ServiceImpl<ManagerMapper, Manager> impl
      * @param manager
      */
     @Override
-    public Map<Integer,String> insertAccount(Manager manager) {
+    public Map<Integer,String> insertManager(Manager manager) {
         Map<Integer,String> result = new HashMap<Integer,String>();
         //设置创建与更新时间
         manager.setCreateTime(LocalDateTime.now());

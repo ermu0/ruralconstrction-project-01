@@ -20,7 +20,7 @@ public interface ManagerService extends IService<Manager> {
      * @param userId
      * @return
      */
-    Manager selectByUserId(String userId);
+    Manager queryByManagerId(String userId);
 
     /**
      * 管理人员信息分页查询
@@ -28,7 +28,7 @@ public interface ManagerService extends IService<Manager> {
      * @param pageSize
      * @return
      */
-    PageBean getAccountByPage(Integer page, Integer pageSize);
+    PageBean pageManagerInfo(Integer page, Integer pageSize);
 
     /**
      * 管理人员信息更新
@@ -40,5 +40,5 @@ public interface ManagerService extends IService<Manager> {
      * 管理人员信息添加
      * @param manager
      */
-    Map<Integer,String> insertAccount(Manager manager);
+    Map<Integer,String> insertManager(Manager manager);
 }

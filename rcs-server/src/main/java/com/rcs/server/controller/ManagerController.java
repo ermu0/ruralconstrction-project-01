@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 管理人员后端接口
+ * 管理人员管理的后端接口
  */
 @Slf4j
 @RestController
@@ -57,7 +57,7 @@ public class ManagerController {//（当前controller下的所有接口我都基
     public Result createAccount(@RequestBody Manager manager){
         log.info("待添加员工工号为：{}",manager.getUserId());
 
-        Map<Integer,String> r = managerService.insertAccount(manager);
+        Map<Integer,String> r = managerService.insertManager(manager);
         return r.containsKey(1) ? Result.success(r.get(1)) : Result.error(r.get(0));
     }
 
@@ -67,8 +67,9 @@ public class ManagerController {//（当前controller下的所有接口我都基
      * @return
      */
     @DeleteMapping("/account/{ids}") //删除员工信息
-    public Result deleteAccountByIds(@PathVariable List<Integer> ids){
+    public Result removeAccount(@PathVariable List<Integer> ids){
         log.info("待删除员工id为：{}", ids);
+        //后续这里要统一更改
         managerService.removeByIds(ids);
         return Result.success();
     }
@@ -78,10 +79,10 @@ public class ManagerController {//（当前controller下的所有接口我都基
      * @param userId
      * @return
      */
-    @GetMapping("/account/{userId}") //根据userId查询具体某位员工
-    public Result getAccountByUserId(@PathVariable String userId){
+    @GetMapping("/account/{userId}") //根据userId查询具体某位员工（这里需要做异常控制，假设没有查询到员工应该怎么做）
+    public Result getAccount(@PathVariable String userId){
         log.info("待查询员工工号为：{}",userId);
-        Manager manager = managerService.selectByUserId(userId);
+        Manager manager = managerService.queryByManagerId(userId);
         return Result.success(manager);
     }
 
@@ -95,8 +96,8 @@ public class ManagerController {//（当前controller下的所有接口我都基
     @GetMapping("/account") //无条件分页查询
     public Result pageAccount(@RequestParam(defaultValue = "1") Integer page,
                               @RequestParam(defaultValue = "10") Integer pageSize){
-        log.info("查询第{}页，共计{}位员工信息",page,pageSize);
-        PageBean pageBean = managerService.getAccountByPage(page,pageSize);
+        log.info("查询第{}页员工信息",page);
+        PageBean pageBean = managerService.pageManagerInfo(page,pageSize);
         return Result.success(pageBean);
     }
 }
