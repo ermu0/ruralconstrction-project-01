@@ -6,18 +6,18 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.rcs.server.domain.pojo.PageBean;
 import com.rcs.server.domain.entity.User;
-import com.rcs.server.mapper.UserMapper;
-import com.rcs.server.service.UserService;
+import com.rcs.server.mapper.UserManageMapper;
+import com.rcs.server.service.UserManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
 
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService{
+public class UserManageServiceImpl extends ServiceImpl<UserManageMapper, User> implements UserManageService {
 
     @Autowired
-    UserMapper userMapper;
+    UserManageMapper userManageMapper;
 
     /**
      * 用户信息无条件分页查询具体操作
@@ -35,7 +35,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 .orderByAsc(User::getCreateTime);
 
         //执行分页查询
-        IPage<User> userIPage = userMapper.selectPage(page,queryWrapper);
+        IPage<User> userIPage = userManageMapper.selectPage(page,queryWrapper);
 
         return new PageBean(userIPage.getTotal(),userIPage.getRecords());
     }
@@ -44,7 +44,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public User queryUserByPhoneNumber(String phoneNumber) {//这里需要做查询为空的异常处理
         LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<User>()
                 .eq(User::getPhoneNumber, phoneNumber);
-        return userMapper.selectOne(lambdaQueryWrapper);
+        return userManageMapper.selectOne(lambdaQueryWrapper);
     }
 
 

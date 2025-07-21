@@ -7,8 +7,9 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "jwt.utils")
-public class JwtUtilsProperties {
-    private String signKey;
-    private Long expire;
+@ConfigurationProperties(prefix = "minio.utils")
+public class MinioProperties {
+    private String endpoint;
+    private String accessKey;
+    private String secretKey;
 }

@@ -40,6 +40,13 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-web</artifactId>-->
+<!--        </dependency>-->
+
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -53,10 +60,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
-
-
-
-
 
 
         <!--下面三个都是jwt令牌的依赖-->
@@ -76,6 +79,13 @@
             <version>0.11.5</version>
         </dependency>
 
+
+        <!--MinIO的依赖-->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>8.4.3</version>
+        </dependency>
 
     </dependencies>
 

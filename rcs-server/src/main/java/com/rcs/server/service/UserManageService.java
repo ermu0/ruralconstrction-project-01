@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.rcs.server.domain.pojo.PageBean;
 import com.rcs.server.domain.entity.User;
 
-import java.util.List;
-import java.util.Map;
-
-public interface UserService extends IService<User> {
+public interface UserManageService extends IService<User> {
 
 
     /**

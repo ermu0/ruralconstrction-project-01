@@ -29,6 +29,14 @@ jwt:
     signKey: vliQsTzi8aKxoDDtK4zYVwAhcUCWcQ3fwB8G6EursIQ=
 
 
+# minio static configuration
+minio:
+  utils:
+    endpoint: http://116.198.38.236:9000
+    accesskey: minioadmin
+    secretkey: 12345678
+
+
 
 # swagger config
 #springdoc:

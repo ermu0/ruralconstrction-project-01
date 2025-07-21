@@ -64,6 +64,7 @@ public class ManagerServiceImpl extends ServiceImpl<ManagerMapper, Manager> impl
     public Manager queryByManagerId(String userId) {
         LambdaQueryWrapper<Manager> wrapper = new LambdaQueryWrapper<Manager>()
                 .eq(Manager::getUserId, userId);
+        //TODO 查询要做null判断
         return managerMapper.selectOne(wrapper);
     }
 

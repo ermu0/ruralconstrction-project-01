@@ -5,10 +5,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.rcs.server.domain.pojo.PageBean;
 import com.rcs.server.domain.entity.Order;
 
-import java.util.List;
 import java.util.Map;
 
-public interface OrderService extends IService<Order> {
+public interface OrderManageService extends IService<Order> {
 
 
     /**
@@ -47,4 +46,7 @@ public interface OrderService extends IService<Order> {
      * @return
      */
     Map<Integer, String> updateOrderInfo(Order order);
+
+    //上传单个文件
+    String uploadOrderFile(Integer id, String filepath);
 }

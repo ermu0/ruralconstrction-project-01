@@ -28,7 +28,7 @@ public class ManagerController {//（当前controller下的所有接口我都基
      * @return
      */
     @PostMapping("/login") //这里稍微有点小bug：每次登录都会重新发放新的令牌（登录还要记录最后一次登录时间）
-    public Result login(@RequestBody Manager manager){
+    public Result login(@RequestBody Manager manager){  
         log.info("管理人员登录：{}",manager);
 
         Map<Integer,String> r = managerService.login(manager);

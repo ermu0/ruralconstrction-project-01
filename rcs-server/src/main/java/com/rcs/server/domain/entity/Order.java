@@ -1,5 +1,6 @@
 package com.rcs.server.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@TableName("`order`") //由于order的表明和sql语句中的order关键字重名了，因此这里做一个转化
 public class Order {
     private Integer id; //主键ID
     private String orderNumber; //订单号

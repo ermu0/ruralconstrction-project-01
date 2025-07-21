@@ -1,6 +1,6 @@
 package com.rcs.common.utils;
 
-import com.rcs.common.properties.JwtUtilsProperties;
+import com.rcs.common.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -18,7 +18,7 @@ import java.util.Map;
 public class JwtUtils {
 
     @Autowired
-    private JwtUtilsProperties jwtUtilsProperties;
+    private JwtProperties jwtProperties;
 
     /**
      * 根据传入的payload构建jwt令牌
@@ -26,8 +26,8 @@ public class JwtUtils {
      * @return String 一个字符串对象
      */
     public String generateJwt(Map<String, Object> claims) {
-        String signKey = jwtUtilsProperties.getSignKey();
-        Long expire = jwtUtilsProperties.getExpire();
+        String signKey = jwtProperties.getSignKey();
+        Long expire = jwtProperties.getExpire();
         //初始化密钥
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(signKey));
         //开始构建JWT令牌
@@ -40,7 +40,7 @@ public class JwtUtils {
     }
 
     public Claims parseJwt(String jwt) {
-        String signKey = jwtUtilsProperties.getSignKey();
+        String signKey = jwtProperties.getSignKey();
         //初始化密钥
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(signKey));
         //开始解析JWT令牌
