@@ -19,7 +19,7 @@ public class UserManageController {
     UserManageService userManageService;
 
     @GetMapping //无条件分页查询
-    public Result pageUser(@RequestParam(defaultValue = "1") Integer page,
+    public Result pageUserInfo(@RequestParam(defaultValue = "1") Integer page,
                            @RequestParam(defaultValue = "10") Integer pageSize) {
         log.info("查询第{}页用户信息", page);
         PageBean pageBean = userManageService.pageUserInfo(page,pageSize);

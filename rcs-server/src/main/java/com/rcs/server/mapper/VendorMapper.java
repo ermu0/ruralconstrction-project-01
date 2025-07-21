@@ -2,6 +2,8 @@ package com.rcs.server.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.rcs.server.domain.entity.Vendor;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -15,39 +17,12 @@ import java.util.List;
 @Mapper
 public interface VendorMapper extends BaseMapper<Vendor> {
 
-//    /**
-//     * 添加供应商信息（单条）(未做null以及空格值校验)
-//     * @param vendor
-//     */
-//    @Insert("insert into vendor(company_name, company_phone, company_charger_name, company_email, company_type, company_address, company_introduction, certificate, create_time, update_time, user_id) " +
-//            "values(#{companyName},#{companyPhone},#{companyChargerName},#{companyEmail},#{companyType},#{companyAddress},#{companyIntroduction},#{certificate},#{createTime},#{updateTime},#{userID}) ")
-//    public void insert(Vendor vendor);
-//
-//
-//    /**
-//     * 根据ID更新供应商信息（单条）
-//     * @param vendor
-//     */
-//    public void update(Vendor vendor);
-//
-//
-//    /**
-//     * 根据ID批量删除供应商信息（单/多条）
-//     * @param ids
-//     */
-//    public void deleteByIds(List<Integer> ids);
-//
-//    /**
-//     * 查询所有数据
-//     * @return List<Vendor> 供应商列表
-//     */
-//    @Select("select * from vendor")
-//    public List<Vendor> selectAll();
-//
-//    /**
-//     * 根据条件查询供应商信息（单/多条）
-//     * @param vendor
-//     * @return
-//     */
-//    public List<Vendor> selectByContion(Vendor vendor);
+    /**
+     * 无条件的分页查询，主要返回供应商的名称、联系方式、联系人、地址、公司资质证书存储地址、产品信息（也就是公司介绍）
+     * @param page
+     * @return
+     */
+    @Select("select id, company_name, company_phone, company_charger_name, company_address, company_type, certificate, company_introduction from vendor")
+    IPage<Vendor> selectVendorInfo(Page<?> page);
+
 }

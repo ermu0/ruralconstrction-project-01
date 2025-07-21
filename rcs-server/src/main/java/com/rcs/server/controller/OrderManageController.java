@@ -30,8 +30,8 @@ public class OrderManageController {
      * @return
      */
     @GetMapping("/a") //这里是无条件查询订单对应的用户姓名、手机号+订单对应需求描述、订单号
-    public Result PageUserOrderInfo(@RequestParam(defaultValue = "1") Integer page,
-                             @RequestParam(defaultValue = "10") Integer pageSize){
+    public Result pageUserOrderInfo(@RequestParam(defaultValue = "1") Integer page,
+                                    @RequestParam(defaultValue = "10") Integer pageSize){
         log.info("查询第{}页订单信息",page);
         PageBean pageBean = orderManageService.queryUserOrderInfo(page,pageSize);
         return Result.success(pageBean);
@@ -45,7 +45,7 @@ public class OrderManageController {
      * @return
      */
     @GetMapping("/a/{phoneNumber}")
-    public Result PageUserOrderInfo(@RequestParam(defaultValue = "1") Integer page,
+    public Result pageUserOrderInfo(@RequestParam(defaultValue = "1") Integer page,
                                  @RequestParam(defaultValue = "10") Integer pageSize,
                                  @PathVariable String phoneNumber){
         log.info("查询手机号为{}的用户订单",phoneNumber);
@@ -59,6 +59,8 @@ public class OrderManageController {
      * @param orderNumber
      * @return
      */
+
+    //TODO 感觉这里需要改一下，改成用键值去查询而不是订单号
     @GetMapping("/{orderNumber}")
     public Result getOrderInfo(@PathVariable String orderNumber){
         log.info("正在查询订单:{}的信息",orderNumber);
@@ -71,10 +73,12 @@ public class OrderManageController {
      * @param orderNumber
      * @return
      */
+
+    //TODO 这里也需要改下吧，改成用键值删除
     @DeleteMapping("/{orderNumber}")
     public Result removeUserOrder(@PathVariable String orderNumber){
         log.info("正在删除订单:{}",orderNumber);
-        //这里后续我统一更改，否则不管删除失败还是成功都会返回成功
+        //TODO 这里后续我统一更改，否则不管删除失败还是成功都会返回成功
         orderManageService.removeOrder(orderNumber);
         return Result.success();
     }

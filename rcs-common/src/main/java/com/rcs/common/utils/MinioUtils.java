@@ -97,8 +97,8 @@ public class MinioUtils {
                         .build());
     }
 
-    //获取文件类型
-    public String getFileTypeName(String filePath){
+    //获取文件类型（提取后缀名）
+    private String getFileTypeName(String filePath){
         return filePath.substring(filePath.lastIndexOf(".") + 1);
     }
 
@@ -107,20 +107,24 @@ public class MinioUtils {
         return UUID.randomUUID().toString() + "." + getFileTypeName(filePath);
     }
 
-    //获取文件存储名
+    //获取文件存储名（包括后缀）
     public String getFileObjectNameFromFileUrl(String fileUrl){//这里的fileUrl是文件minio存储路径
         return fileUrl.substring(fileUrl.lastIndexOf("/")+1);
     }
 
-    //获取文件所属bucket
+    //通过本地文件路径获取文件所属bucket
     public String getBucketNameFromFilePath(String filePath){
         return getFileTypeName(filePath);
     }
 
+    //通过文件服务器存储路径获取所属bucket
+    public String getBucketNameFromFileUrl(String fileUrl){
+        return getFileTypeName(fileUrl);
+    }
 
     //获取文件存储地址
     public String getFiletUrl(String bucketName, String objectName) {
-        return minioProperties.getEndpoint() + bucketName + "/" + bucketName + "/" + objectName;
+        return minioProperties.getEndpoint() + bucketName + "/" + objectName;
     }
 
 

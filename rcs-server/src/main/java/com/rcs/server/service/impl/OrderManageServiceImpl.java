@@ -117,10 +117,10 @@ public class OrderManageServiceImpl extends ServiceImpl<OrderManageMapper, Order
     //上传单个文件
     @Override
     public String uploadOrderFile(Integer id, String filePath){
-        //首先要判断该文件类型，然后通过类型匹配对应的bucket
-        String bucketName = minioUtils.getBucketNameFromFilePath(filePath);
         String fileUrl = "";
         try {
+            //首先要判断该文件类型，然后通过类型匹配对应的bucket
+            String bucketName = minioUtils.getBucketNameFromFilePath(filePath);
             //利用客户端判断并创建bucket
             minioUtils.createMinioBucket(minioClient,bucketName);
             //构建对应的文件存储名

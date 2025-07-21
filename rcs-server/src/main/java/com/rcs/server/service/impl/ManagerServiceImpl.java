@@ -74,6 +74,8 @@ public class ManagerServiceImpl extends ServiceImpl<ManagerMapper, Manager> impl
      * @param pageSize
      * @return
      */
+
+    //TODO 这里我做了排序处理（后续跟前端商量一下看如何排序）
     @Override
     public PageBean pageManagerInfo(Integer pageNow, Integer pageSize) {
         // 准备分页条件
