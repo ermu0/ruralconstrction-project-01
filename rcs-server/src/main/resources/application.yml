@@ -33,9 +33,9 @@ jwt:
 minio:
   utils:
     endpoint: http://116.198.38.236:9000
-    accesskey: minioadmin
-    secretkey: 12345678
-
+    accessKey: minioadmin
+    secretKey: 12345678
+    bucketName: test
 
 
 # swagger config

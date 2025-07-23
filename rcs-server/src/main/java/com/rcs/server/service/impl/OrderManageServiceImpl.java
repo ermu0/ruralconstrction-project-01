@@ -16,6 +16,8 @@ import io.minio.MinioClient;
 import io.minio.errors.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -31,12 +33,6 @@ public class OrderManageServiceImpl extends ServiceImpl<OrderManageMapper, Order
     @Autowired
     OrderManageMapper orderManageMapper;
 
-    @Autowired
-    MinioUtils minioUtils;
-
-    @Autowired
-    MinioClient minioClient;
-
     /**
      * 用户部分信息以及部分订单信息分页查询具体操作
      * @param pageNow
@@ -47,9 +43,11 @@ public class OrderManageServiceImpl extends ServiceImpl<OrderManageMapper, Order
     public PageBean queryUserOrderInfo(Integer pageNow, Integer pageSize) {
         Page<Order> page = Page.of(pageNow,pageSize);
 
-        //TODO 执行分页查询（暂未做排序，看后续需求）
+        //TODO 执行分页查询（暂未做排序）
         IPage<UserOrderDto> orderIPage = orderManageMapper.selectUserOrderInfoA(page);
-
+        if (orderIPage.getTotal() <= 0){
+            throw new RuntimeException("数据库连接出现问题，请联系管理员");
+        }
         return new PageBean(orderIPage.getTotal(),orderIPage.getRecords());
     }
 
@@ -57,43 +55,53 @@ public class OrderManageServiceImpl extends ServiceImpl<OrderManageMapper, Order
      * 某个用户的部分信息以及部分订单信息分页查询具体操作
      * @param pageNow
      * @param pageSize
-     * @param phoneNumer
+     * @param phoneNumber
      * @return
      */
     @Override
-    public PageBean queryUserOrderInfo(Integer pageNow, Integer pageSize, String phoneNumer) {
+    public PageBean queryUserOrderInfo(Integer pageNow, Integer pageSize, String phoneNumber) {
         Page<Order> page = Page.of(pageNow,pageSize);
 
         //TODO 执行分页查询（暂未做排序）
-        IPage<UserOrderDto> orderIPage = orderManageMapper.selectUserOrderInfoB(page, phoneNumer);
+        IPage<UserOrderDto> orderIPage = orderManageMapper.selectUserOrderInfoB(page, phoneNumber);
+        if(orderIPage.getTotal() <= 0){
+            throw new RuntimeException("未查询到订单信息");
+        }
 
         return new PageBean(orderIPage.getTotal(),orderIPage.getRecords());
     }
 
     /**
-     * 用户订单信息具体查询具体操作
-     * @param orderNumber
+     * 根据订单的键值查询订单信息
+     * @param id
      * @return
      */
     @Override
-    public Order queryOrderInfo(String orderNumber) {
+    public Order queryOrderInfo(Integer id) {
         //构造查询条件
         LambdaQueryWrapper<Order> queryWrapper = new LambdaQueryWrapper<Order>()
-                .eq(Order::getOrderNumber,orderNumber);
-
-        return orderManageMapper.selectOne(queryWrapper);
+                .eq(Order::getId,id);
+        Order order = orderManageMapper.selectOne(queryWrapper);
+        if(order == null){
+            throw new RuntimeException("未查询到订单信息");
+        }
+        return order;
     }
 
     /**
      * 用户订单信息删除具体操作
-     * @param orderNumber
+     * @param id
      */
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public void removeOrder(String orderNumber) {
+    public void removeOrder(Integer id) {
         LambdaQueryWrapper<Order> queryWrapper = new LambdaQueryWrapper<Order>()
-                .eq(Order::getOrderNumber,orderNumber);
+                .eq(Order::getId,id);
 
-        orderManageMapper.delete(queryWrapper);
+        int row = orderManageMapper.delete(queryWrapper); //删除的行数
+        if(row == 0){
+            throw new RuntimeException("订单删除失败");
+        }
     }
 
     /**
@@ -101,45 +109,14 @@ public class OrderManageServiceImpl extends ServiceImpl<OrderManageMapper, Order
      * @param order
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public Map<Integer, String> updateOrderInfo(Order order) {
-        Map<Integer,String> result = new HashMap<Integer,String>();
+    public void updateOrderInfo(Order order) {
         order.setUpdateTime(LocalDateTime.now());
-        //TODO 后续的异常判断应该是直接throw交给全局处理器
-        if (orderManageMapper.updateById(order) == 1){
-            result.put(1,"信息更新成功");
-        }else {
-            result.put(0,"信息更新失败，请重新检查信息是否有误");
+        int row = orderManageMapper.updateById(order); //更新的行数
+        if(row <= 0){
+            throw new RuntimeException("订单信息保存失败");
         }
-        return result;
     }
-
-    //上传单个文件
-    @Override
-    public String uploadOrderFile(Integer id, String filePath){
-        String fileUrl = "";
-        try {
-            //首先要判断该文件类型，然后通过类型匹配对应的bucket
-            String bucketName = minioUtils.getBucketNameFromFilePath(filePath);
-            //利用客户端判断并创建bucket
-            minioUtils.createMinioBucket(minioClient,bucketName);
-            //构建对应的文件存储名
-            String objectName = minioUtils.getFileObjectName(filePath);
-            //上传文件返回文件存储url
-            fileUrl = minioUtils.uploadFile(minioClient, bucketName, filePath, objectName);
-            //将url存储到数据库中（更新订单表中id为#{id}的订单的orderContract字段以及updataTime字段）
-            LambdaUpdateWrapper<Order> lambdaUpdateWrapper = new LambdaUpdateWrapper<Order>()
-                    .set(Order::getUpdateTime,LocalDateTime.now())
-                    .set(Order::getOrderContract,fileUrl)
-                    .eq(Order::getId,id);
-            //TODO 这里应该做一个异常判断
-            orderManageMapper.update(lambdaUpdateWrapper);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        //返回url
-        return fileUrl;
-    }
-
 
 }

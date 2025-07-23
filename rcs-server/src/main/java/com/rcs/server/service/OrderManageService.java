@@ -5,8 +5,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.rcs.server.domain.pojo.PageBean;
 import com.rcs.server.domain.entity.Order;
 
-import java.util.Map;
-
 public interface OrderManageService extends IService<Order> {
 
 
@@ -22,31 +20,29 @@ public interface OrderManageService extends IService<Order> {
      * 某个用户的部分信息以及部分订单信息分页查询
      * @param page
      * @param pageSize
-     * @param phoneNumer
+     * @param phoneNumber
      * @return
      */
-    PageBean queryUserOrderInfo(Integer page, Integer pageSize, String phoneNumer);
+    PageBean queryUserOrderInfo(Integer page, Integer pageSize, String phoneNumber);
 
     /**
      * 用户订单信息具体查询
-     * @param orderNumber
+     * @param id
      * @return
      */
-    Order queryOrderInfo(String orderNumber);
+    Order queryOrderInfo(Integer id);
 
     /**
      * 用户订单信息删除
-     * @param orderNumber
+     * @param id
      */
-    void removeOrder(String orderNumber);
+    void removeOrder(Integer id);
 
     /**
      * 用户订单信息更新
      * @param order
      * @return
      */
-    Map<Integer, String> updateOrderInfo(Order order);
+    void updateOrderInfo(Order order);
 
-    //上传单个文件
-    String uploadOrderFile(Integer id, String filepath);
 }

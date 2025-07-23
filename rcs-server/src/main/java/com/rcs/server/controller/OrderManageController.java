@@ -9,8 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 
 /**
  * 用户订单管理的后端接口
@@ -44,6 +42,7 @@ public class OrderManageController {
      * @param phoneNumber
      * @return
      */
+    //之所以要分页，是因为一个用户可能会创建多个订单，所以需要将返回的订单信息进行分页
     @GetMapping("/a/{phoneNumber}")
     public Result pageUserOrderInfo(@RequestParam(defaultValue = "1") Integer page,
                                  @RequestParam(defaultValue = "10") Integer pageSize,
@@ -56,31 +55,26 @@ public class OrderManageController {
 
     /**
      * 用户订单信息具体查询
-     * @param orderNumber
+     * @param id
      * @return
      */
-
-    //TODO 感觉这里需要改一下，改成用键值去查询而不是订单号
-    @GetMapping("/{orderNumber}")
-    public Result getOrderInfo(@PathVariable String orderNumber){
-        log.info("正在查询订单:{}的信息",orderNumber);
-        Order order = orderManageService.queryOrderInfo(orderNumber);
+    @GetMapping("/{id}")
+    public Result getOrderInfo(@PathVariable Integer id){
+        log.info("正在查询键值为：{}的订单信息",id);
+        Order order = orderManageService.queryOrderInfo(id);
         return Result.success(order);
     }
 
     /**
      * 用户订单信息删除
-     * @param orderNumber
+     * @param id
      * @return
      */
-
-    //TODO 这里也需要改下吧，改成用键值删除
-    @DeleteMapping("/{orderNumber}")
-    public Result removeUserOrder(@PathVariable String orderNumber){
-        log.info("正在删除订单:{}",orderNumber);
-        //TODO 这里后续我统一更改，否则不管删除失败还是成功都会返回成功
-        orderManageService.removeOrder(orderNumber);
-        return Result.success();
+    @DeleteMapping("/{id}")
+    public Result removeUserOrderInfo(@PathVariable Integer id){
+        log.info("正在删除键值为：{}的订单信息", id);
+        orderManageService.removeOrder(id);
+        return Result.success("订单删除成功");
     }
 
 
@@ -92,18 +86,8 @@ public class OrderManageController {
     @PutMapping
     public Result updateOrderInfo(@RequestBody Order order){
         log.info("正在修改订单信息：{}",order);
-        Map<Integer, String> r =  orderManageService.updateOrderInfo(order);
-        return r.containsKey(1) ? Result.success(r.get(1)) : Result.error(r.get(0));
-    }
-
-
-    //上传单个文件
-    @PostMapping("/upload")
-    public Result uploadOrderFile(Integer id, String filepath){
-        log.info("上传文件为：{}",filepath);
-        //获取文件的存储url提交给前端
-        String fileUrl = orderManageService.uploadOrderFile(id, filepath);
-        return Result.success(fileUrl);
+        orderManageService.updateOrderInfo(order);
+        return Result.success("保存成功");
     }
 
 }
