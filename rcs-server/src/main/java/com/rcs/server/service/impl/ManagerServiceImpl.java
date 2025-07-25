@@ -54,6 +54,23 @@ public class ManagerServiceImpl extends ServiceImpl<ManagerMapper, Manager> impl
         return result;
     }
 
+    /**
+     * 分页查询所有管理员信息
+     * @param pageNow
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public PageBean pageManagerInfo(Integer pageNow, Integer pageSize) {
+        // 准备分页条件
+        Page<Manager> page =  Page.of(pageNow,pageSize);
+        // TODO 执行分页查询（暂未做排序）
+        IPage<Manager> managerIPage = managerMapper.selectManagerInfo(page);
+        if (managerIPage.getTotal() <= 0){
+            throw new RuntimeException("数据库连接异常，请联系管理员");
+        }
+        return new PageBean(managerIPage.getTotal(),managerIPage.getRecords());
+    }
 
     /**
      * 管理人员信息查询具体操作
@@ -61,48 +78,26 @@ public class ManagerServiceImpl extends ServiceImpl<ManagerMapper, Manager> impl
      * @return
      */
     @Override
-    public Manager queryByManagerId(String userId) {
-        LambdaQueryWrapper<Manager> wrapper = new LambdaQueryWrapper<Manager>()
-                .eq(Manager::getUserId, userId);
-        //TODO 查询要做null判断
-        return managerMapper.selectOne(wrapper);
+    public Manager queryByManagerUserId(String userId) {
+        Manager manager = managerMapper.selectManagerInfoByUserId(userId);
+        if (manager != null) {
+            throw new RuntimeException("未查询到员工信息");
+        }
+        return manager;
     }
 
-    /**
-     * 管理人员信息分页查询具体操作（无额外条件）
-     * @param pageNow
-     * @param pageSize
-     * @return
-     */
-
-    //TODO 这里我做了排序处理（后续跟前端商量一下看如何排序）
-    @Override
-    public PageBean pageManagerInfo(Integer pageNow, Integer pageSize) {
-        // 准备分页条件
-        Page<Manager> page =  Page.of(pageNow,pageSize);
-        // 根据创建时间进行升序排序（不要硬编码）
-        LambdaQueryWrapper<Manager> queryWrapper = new LambdaQueryWrapper<Manager>()
-                .orderByAsc(Manager::getCreateTime);
-        // 执行分页查询
-        IPage<Manager> managerIPage = managerMapper.selectPage(page, queryWrapper);
-        return new PageBean(managerIPage.getTotal(),managerIPage.getRecords());
-    }
 
     /**
      * 管理人员信息更新
      * @param manager
      */
     @Override
-    public Map<Integer,String> updateManagerInfo(Manager manager) {
-        Map<Integer,String> result = new HashMap<Integer,String>();
+    public void updateManagerInfo(Manager manager) {
         manager.setUpdateTime(LocalDateTime.now());
-
-        if (managerMapper.updateById(manager) == 1){
-            result.put(1,"信息更新成功");
-        }else {
-            result.put(0,"信息更新失败，请重新检查信息是否有误");
+        int row = managerMapper.updateById(manager);
+        if (row <= 0){
+            throw new RuntimeException("员工信息保存失败");
         }
-        return result;
     }
 
     /**
@@ -123,5 +118,19 @@ public class ManagerServiceImpl extends ServiceImpl<ManagerMapper, Manager> impl
             result.put(0,"信息添加失败，请重新检查信息是否有误");
         }
         return result;
+    }
+
+    /**
+     * 根据ID删除员工信息
+     * @param id
+     */
+    @Override
+    public void removeManagerById(Integer id) {
+        //我感觉这里比较复杂，一方面要删除对应权限表，一方面要删除员工表
+        //其实也不用这么麻烦哈，直接删掉员工表中对应数据就行了
+        int row = managerMapper.deleteById(id);
+        if (row <= 0){
+            throw new RuntimeException("员工信息删除失败");
+        }
     }
 }

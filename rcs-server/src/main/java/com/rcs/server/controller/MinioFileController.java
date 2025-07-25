@@ -4,10 +4,7 @@ import com.rcs.server.domain.pojo.Result;
 import com.rcs.server.service.MinioFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
@@ -19,8 +16,8 @@ public class MinioFileController {
     MinioFileService minioFileService;
 
     @PostMapping("/upload")
-    public Result uploadFile(MultipartFile file){
-        log.info("file:{} is uploading", file.getOriginalFilename());
+    public Result uploadFile(@RequestPart("file") MultipartFile file){
+        log.info("file：{} is uploading", file.getOriginalFilename());
         String fileUrl = minioFileService.uploadFile(file);
         return Result.success(fileUrl);
     }

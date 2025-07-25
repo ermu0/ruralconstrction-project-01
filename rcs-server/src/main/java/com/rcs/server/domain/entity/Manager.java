@@ -18,7 +18,7 @@ public class Manager {
     //如果在全局配置里面标注了ID的分配方法，那么这里就不需要在另外标注了
     private Integer id; //主键ID
     private String userId; //员工工号/登录账号（唯一且非空）
-    private String password; //登录密码
+    private String password; //登录密码（前端只展示几位就行了吧，避免泄露隐私）
     private String userName; //员工姓名
     private String email; //邮箱
     private String phone; //员工手机号

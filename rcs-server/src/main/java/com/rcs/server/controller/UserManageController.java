@@ -18,7 +18,13 @@ public class UserManageController {
     @Autowired
     UserManageService userManageService;
 
-    @GetMapping //无条件分页查询
+    /**
+     * 分页查询所有用户信息
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    @GetMapping
     public Result pageUserInfo(@RequestParam(defaultValue = "1") Integer page,
                            @RequestParam(defaultValue = "10") Integer pageSize) {
         log.info("查询第{}页用户信息", page);
@@ -26,17 +32,27 @@ public class UserManageController {
         return Result.success(pageBean);
     }
 
-    @GetMapping("/{phoneNumber}") //需要做查询为空的异常处理
+    /**
+     * 根据手机号查询目标用户
+     * @param phoneNumber
+     * @return
+     */
+    @GetMapping("/{phoneNumber}")
     public Result getAccount(@PathVariable String phoneNumber) {
         log.info("带查询用户手机号为{}", phoneNumber);
         User user = userManageService.queryUserByPhoneNumber(phoneNumber);
         return Result.success(user);
     }
 
-    @DeleteMapping("/{ids}") //这里应该是做批量删除才对，前面应该有选项框（这里应该要做异常控制吧）
-    public Result deleteUser(@PathVariable List<Integer> ids) {
-        log.info("待删除员工id有：{}",ids);
-        userManageService.removeByIds(ids);
-        return Result.success();
+    /**
+     * 根据ID删除目标用户
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/{id}") //这里应该是做批量删除才对，前面应该有选项框
+    public Result removeUser(@PathVariable Integer id) {
+        log.info("待删除员工id为：{}",id);
+        userManageService.removeUserById(id);
+        return Result.success("删除成功");
     }
 }

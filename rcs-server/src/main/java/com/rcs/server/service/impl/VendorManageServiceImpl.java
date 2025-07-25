@@ -37,7 +37,7 @@ public class VendorManageServiceImpl extends ServiceImpl<VendorMapper, Vendor> i
         Page<Vendor> page = Page.of(pageNow,pageSize);
         IPage<Vendor> vendorIPage = vendorMapper.selectVendorInfo(page);
         if (vendorIPage.getTotal() <= 0){
-            throw new RuntimeException("数据库连接出现问题，请联系管理员");
+            throw new RuntimeException("数据库连接异常，请联系管理员");
         }
         return new PageBean(vendorIPage.getTotal(),vendorIPage.getRecords());
     }

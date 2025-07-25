@@ -16,8 +16,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class) //这里来指定捕获的异常类型
     public Result exception(Exception ex) {
-        ex.printStackTrace();
-        log.info("异常信息：{}",ex.getMessage());
+        log.error("全局捕获，异常原因：{}", ex.getCause().getMessage(),ex);//打印异常原因、异常堆栈信息(包括了当前的异常消息、异常原因)
         return Result.error(ex.getMessage());
     }
 }

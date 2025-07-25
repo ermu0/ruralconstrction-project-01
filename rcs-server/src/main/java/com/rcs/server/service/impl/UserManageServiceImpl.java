@@ -30,21 +30,44 @@ public class UserManageServiceImpl extends ServiceImpl<UserManageMapper, User> i
         // 准备分页条件
         Page<User> page =  Page.of(pageNow,pageSize);
 
-        // 根据创建时间进行升序排序（不要硬编码）
-        LambdaQueryWrapper queryWrapper = new LambdaQueryWrapper<User>()
-                .orderByAsc(User::getCreateTime);
+        //TODO 执行分页查询（暂未做排序）
+        IPage<User> userIPage = userManageMapper.selectUserInfo(page);
 
-        //执行分页查询
-        IPage<User> userIPage = userManageMapper.selectPage(page,queryWrapper);
+        if (userIPage.getTotal() <= 0){
+            throw new RuntimeException("数据库连接异常，请联系管理员");
+        }
 
         return new PageBean(userIPage.getTotal(),userIPage.getRecords());
     }
 
+    /**
+     * 根据手机号查询目标用户
+     * @param phoneNumber
+     * @return
+     */
     @Override
-    public User queryUserByPhoneNumber(String phoneNumber) {//这里需要做查询为空的异常处理
+    public User queryUserByPhoneNumber(String phoneNumber) {
         LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<User>()
                 .eq(User::getPhoneNumber, phoneNumber);
-        return userManageMapper.selectOne(lambdaQueryWrapper);
+        User user = userManageMapper.selectOne(lambdaQueryWrapper);
+        if (user == null){
+            throw new RuntimeException("未查询到用户信息");
+        }
+        return user;
+    }
+
+    /**
+     * 根据ID删除目标用户
+     * @param id
+     */
+    @Override
+    public void removeUserById(Integer id) {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<User>()
+                .eq(User::getId, id);
+        int row = userManageMapper.delete(queryWrapper);
+        if (row <= 0){
+            throw new RuntimeException("用户信息删除失败");
+        }
     }
 
 

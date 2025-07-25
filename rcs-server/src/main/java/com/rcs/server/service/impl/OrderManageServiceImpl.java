@@ -46,7 +46,7 @@ public class OrderManageServiceImpl extends ServiceImpl<OrderManageMapper, Order
         //TODO 执行分页查询（暂未做排序）
         IPage<UserOrderDto> orderIPage = orderManageMapper.selectUserOrderInfoA(page);
         if (orderIPage.getTotal() <= 0){
-            throw new RuntimeException("数据库连接出现问题，请联系管理员");
+            throw new RuntimeException("数据库连接异常，请联系管理员");
         }
         return new PageBean(orderIPage.getTotal(),orderIPage.getRecords());
     }
@@ -99,7 +99,7 @@ public class OrderManageServiceImpl extends ServiceImpl<OrderManageMapper, Order
                 .eq(Order::getId,id);
 
         int row = orderManageMapper.delete(queryWrapper); //删除的行数
-        if(row == 0){
+        if(row <= 0){
             throw new RuntimeException("订单删除失败");
         }
     }

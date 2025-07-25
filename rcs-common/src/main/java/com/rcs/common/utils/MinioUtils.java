@@ -2,7 +2,6 @@ package com.rcs.common.utils;
 
 import com.rcs.common.properties.MinioProperties;
 import io.minio.*;
-import io.minio.errors.MinioException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,10 +34,9 @@ public class MinioUtils {
                 log.info("Bucket {} already exists.", bucketName);
             }
         }catch (Exception e){
-            log.error(e.getMessage());
-            throw new RuntimeException("bucket创建失败");
+            log.error("桶创建出错：{}",e.getMessage(),e);
+            throw new RuntimeException(e);
         }
-
     }
 
     /**
@@ -59,12 +57,12 @@ public class MinioUtils {
                             .contentType(file.getContentType()) //代表文件类型，主要为了用户在调用时能够正确识别并处理
                             .build()
             );
-            log.info("Uploaded file successfully");
+            log.info("Uploaded file successfully!");
             //返回文件访问路径
             return getFiletUrl(bucketName, objectName);
-        }catch (Exception e) {
-            log.error(e.getMessage());
-            throw new RuntimeException("文件上传失败");
+        }catch (Exception e) { //尽量不要全部都捕获，这里我全捕获是为了开发方便，千万别学我
+            log.error("文件上传时出错，错误原因：{}",e.getMessage(),e); //打印异常原因、异常堆栈
+            throw new RuntimeException("文件上传出错", e); //往上层传递错误原因
         }
     }
 
@@ -82,8 +80,8 @@ public class MinioUtils {
                             .object(objectName)
                             .build());
         }catch (Exception e){
-            log.error(e.getMessage());
-            throw new RuntimeException("文件删除失败");
+            log.error("文件删除时出错，错误原因：{}",e.getMessage(),e);
+            throw new RuntimeException("文件删除出错",e);
         }
     }
 
@@ -93,7 +91,7 @@ public class MinioUtils {
         //获取文件原始名称
         String fileName = file.getOriginalFilename();
         //获取文件后缀
-        String ext = fileName.substring(fileName.lastIndexOf("."));
+        String ext = fileName.substring(fileName.lastIndexOf(".")+1);
         //构建唯一标识
         String uuid = UUID.randomUUID().toString();
         //构建日期前缀，方便文件归档
@@ -109,7 +107,7 @@ public class MinioUtils {
 
     //获取文件存储地址
     public String getFiletUrl(String bucketName, String objectName) {
-        return String.join("/", minioProperties.getBucketName(), bucketName, objectName);
+        return String.join("/", minioProperties.getEndpoint() ,bucketName, objectName);
     }
 
 }

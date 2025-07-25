@@ -20,7 +20,7 @@ public interface ManagerService extends IService<Manager> {
      * @param userId
      * @return
      */
-    Manager queryByManagerId(String userId);
+    Manager queryByManagerUserId(String userId);
 
     /**
      * 管理人员信息分页查询
@@ -34,11 +34,17 @@ public interface ManagerService extends IService<Manager> {
      * 管理人员信息更新
      * @param manager
      */
-    Map<Integer,String> updateManagerInfo(Manager manager);
+    void updateManagerInfo(Manager manager);
 
     /**
      * 管理人员信息添加
      * @param manager
      */
     Map<Integer,String> insertManager(Manager manager);
+
+    /**
+     * 根据ID删除目标员工信息
+     * @param id
+     */
+    void removeManagerById(Integer id);
 }

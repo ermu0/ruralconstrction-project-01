@@ -6,12 +6,14 @@ import com.rcs.server.domain.entity.Manager;
 import com.rcs.server.domain.pojo.PageBean;
 import com.rcs.server.mapper.ManagerMapper;
 import com.rcs.server.service.ManagerService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
+@Slf4j
 @SpringBootTest
 class RcsServerApplicationTests {
 
@@ -55,10 +57,19 @@ class RcsServerApplicationTests {
         managerMapper.update(null, updateWrapper);
     }
 
+//    @Test
+//    public void testTryCatch(){
+//        try {
+//            try {
+//                int i = 1 / 0;
+//            }catch (Exception e){
+//                log.error("t0:"+e.getCause(),e);
+//                throw new RuntimeException(e);//它会向上层的try catch传递，直到最终层
+//            }
+//        }catch (Exception e){
+//            log.error("t1:"+e.getCause());
+//            throw new RuntimeException("算式有错");
+//        }
+//    }
 
-    @Test
-    public void testGetAccountByPage(){
-        PageBean pageBean = managerService.getAccountByPage(1,5);
-        System.out.println(pageBean);
-    }
 }
